@@ -3,12 +3,22 @@ import { useState } from "react";
 import { StyledDropZone } from "react-drop-zone";
 import "react-drop-zone/dist/styles.css";
 import axios from 'axios'
+import Navbar from "../Component/Navbar";
 
+interface BlogPost {
+  title?: string;
+  date?: string;
+  slug?: string;
+  content?: string;
+}
 
 const CreatePost: React.FC = () => {
 
 
     const [file,setFile]= useState(null)
+const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -18,6 +28,7 @@ const CreatePost: React.FC = () => {
 
   });
 
+  
 
 const uploadFile = (file:any | null) => async () => {
     try {
@@ -64,30 +75,70 @@ const uploadFile = (file:any | null) => async () => {
   };
 
 const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-    console.log("i am submiting");
- try {
-   await axios.post("http://localhost:4200/posts", formData);
+    e.preventDefault();
 
-   console.log("Form submitted:", formData);
- } catch (error) {
-   console.error("Error submitting form:", error);
- }
- 
-};
+    try {
+      // Fetch the existing blog data
+      const response = await axios.get("http://localhost:4200/posts");
+      const existingBlogData: BlogPost[] = response.data;
+
+      // Check if a post with the same title exists
+      const existingPost = existingBlogData.find(
+        (post) => post.title === formData.title
+      );
+
+      if (existingPost) {
+        // Display an error message if a post with the same title exists
+        setError("A post with the same title already exists.");
+        setMessage(null); // Clear the success message
+      } else {
+        // Submit the form if the title doesn't exist
+        await axios.post("http://localhost:4200/posts", formData);
+
+        // Display a success message on successful submission
+        setMessage("Form submitted successfully.");
+        setError(null); // Clear the error message
+
+        // Clear the form data
+        setFormData({
+          title: "",
+          content: "",
+          date: "",
+          slug: "",
+          file: "",
+        });
+      }
+    } catch (error) {
+      // Display an error message if the submission or fetching data fails
+      setMessage("Failed to submit the form.");
+      setError("An error occurred.");
+      console.error("Error submitting form:", error);
+    }
+  };
 
 
   return (
-    <div className="container mx-auto mt-8">
-      <div className="max-w-md mx-auto bg-white p-8 border border-gray-300 rounded-md shadow-md">
-        <h1 className="text-2xl font-bold mb-4">Create a New Post</h1>
+    <div className="container mx-auto ">
+      <Navbar />
+
+      <div
+        className="max-w-md mx-auto bg-white p-8 border border-gray-300 rounded-md shadow-md "
+        style={{ marginTop: "50px", width: "704px" }}
+      >
+        {(error || message) && (
+          <div className={`mb-4 p-2 ${error ? "bg-red-200" : "bg-green-200"}`}>
+            {error || message}
+          </div>
+        )}
+        <h4 className="text-2xl font-bold mb-4">Create Blog Post</h4>
+        <p>Enter your blog detailshere. Click save when you're done.</p>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          <div className="mb-4  ">
             <label
               htmlFor="title"
               className="block text-sm font-medium text-gray-600"
             >
-              Title
+              Blog Title
             </label>
             <input
               type="text"
@@ -96,6 +147,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               value={formData.title}
               onChange={handleChange}
               className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              placeholder="Harry Potter"
               required
             />
           </div>
@@ -132,6 +184,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               value={formData.slug}
               onChange={handleChange}
               className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              placeholder="Harry Potter"
               required
             />
           </div>
@@ -144,32 +197,31 @@ const handleSubmit = async (e: React.FormEvent) => {
               Image
             </label>
 
-            <StyledDropZone onDrop={async (file: any, text: any) => {
-                console.log("file is ",file);
-                 const formD = new FormData();
-                 formD.append("file", file);
-                 formD.append("upload_preset", "f3gqwyzn");
-                 formD.append("cloud_name", "dqquyjsap");
-                console.log("form data appended");
-                    
-                 const response = await axios.post(
-                   "https://api.cloudinary.com/v1_1/dqquyjsap/image/upload",
-                   formD,
-                   {
-                     headers: {
-                       "Content-Type": "multipart/form-data",
-                     },
-                   }
-                 );
+            <StyledDropZone
+              onDrop={async (file: any, text: any) => {
+                console.log("file is ", file);
+                const formD = new FormData();
+                formD.append("file", file);
+                formD.append("upload_preset", "f3gqwyzn");
+                formD.append("cloud_name", "dqquyjsap");
+
+                const response = await axios.post(
+                  "https://api.cloudinary.com/v1_1/dqquyjsap/image/upload",
+                  formD,
+                  {
+                    headers: {
+                      "Content-Type": "multipart/form-data",
+                    },
+                  }
+                );
                 console.log("file uploaded");
 
-                 setFormData((prevData) => ({
-                   ...prevData,
-                   file: response.data.secure_url,
-                 }));
-                console.log("done");
-                
-            }} />
+                setFormData((prevData) => ({
+                  ...prevData,
+                  file: response.data.secure_url,
+                }));
+              }}
+            />
           </div>
 
           <div className="mb-4">
@@ -186,13 +238,15 @@ const handleSubmit = async (e: React.FormEvent) => {
               onChange={handleChange}
               rows={4}
               className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              placeholder="Text"
               required
             ></textarea>
           </div>
 
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+            className=" text-white px-4 py-2 rounded-md "
+            style={{ backgroundColor: "#8E8E8E" }}
           >
             Save Changes
           </button>

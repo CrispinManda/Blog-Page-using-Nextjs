@@ -4,7 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import Navbar from "./Component/Navbar";
 import { Pagination } from "flowbite-react";
-
+import footer from "@/app/Component/footer";
 interface BlogPost {
   title: string;
   date: string;
@@ -25,16 +25,23 @@ const Home: React.FC = () => {
     fetchData(page);
   };
 
-  const fetchData = async (page: number) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4200/posts?_page=${page}&_limit=${postsPerPage}`
-      );
-      setBlogData(response.data);
-    } catch (error) {
-      console.error("Error fetching blog posts:", error);
-    }
-  };
+const fetchData = async (page: number) => {
+  try {
+    const response = await axios.get(`http://localhost:4200/posts`);
+    const allPosts: BlogPost[] = response.data;
+
+    // Sort the posts by date in descending order
+    const sortedPosts = allPosts.sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return dateB - dateA;
+    });
+
+    setBlogData(sortedPosts);
+  } catch (error) {
+    console.error("Error fetching blog posts:", error);
+  }
+};
 
   useEffect(() => {
     fetchData(currentPage);
@@ -51,6 +58,8 @@ const Home: React.FC = () => {
       const filteredPosts = blogData.filter((post) =>
         post.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
+      console.log(filteredPosts);
+
       return filteredPosts;
     }
   };
@@ -65,13 +74,20 @@ const Home: React.FC = () => {
     indexOfFirstPost,
     indexOfLastPost
   );
+  const totalPages = Math.ceil(filteredBlogData.length / postsPerPage);
+
+  console.log("TOTAL PAGES IS ", totalPages);
 
   return (
     <>
       <Navbar onSearchQueryChange={(query) => handleCallback(query)} />
       <div>
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-4">Blog Posts</h1>
+          <h1 className="text-3xl font-bold mb-4 mt-10">
+            The Accessibility Blog <br />{" "}
+            <span className="text-sm	text-muted">The voice of the excluded</span>
+          </h1>
+          {/* <p>The voice of the excluded</p> */}
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
             {currentPosts.map((post: BlogPost) => (
               <div
@@ -99,15 +115,22 @@ const Home: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex overflow-x-auto sm:justify-center">
+          <div className="flex overflow-x-auto sm:justify-center space-x-4">
             <Pagination
               currentPage={currentPage}
               totalPages={Math.ceil(filteredBlogData.length / postsPerPage)}
               onPageChange={onPageChange}
             />
+            {/* 
+  <Pagination
+    currentPage={currentPage}
+    totalPages={100}
+    onPageChange={onPageChange}
+  /> */}
           </div>
         </div>
       </div>
+      <footer />
     </>
   );
 };
