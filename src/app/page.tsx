@@ -1,4 +1,5 @@
 "use client";
+import "./globals.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
@@ -117,8 +118,8 @@ const fetchData = async (page: number) => {
             ))}
           </div>
 
-          <div className="flex justify-center">
-            <Pagination
+          <div className="flex justify-center hello">
+            <Pagination className="ps"
               currentPage={currentPage}
               totalPages={Math.ceil(filteredBlogData.length / postsPerPage)}
               onPageChange={onPageChange}
