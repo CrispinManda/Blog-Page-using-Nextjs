@@ -4,7 +4,8 @@ import axios from "axios";
 import Link from "next/link";
 import Navbar from "./Component/Navbar";
 import { Pagination } from "flowbite-react";
-import footer from "@/app/Component/footer";
+// import footer from "@/app/Component/footer";
+import Footer from "@/app/Component/footer";
 interface BlogPost {
   title: string;
   date: string;
@@ -92,20 +93,21 @@ const fetchData = async (page: number) => {
             {currentPosts.map((post: BlogPost) => (
               <div
                 key={post.slug}
-                className="bg-white shadow-md border border-gray-200 rounded-lg max-w-sm mb-5"
+                className="shadow-md border border-gray-200 rounded-lg max-w-sm mb-5"
+                style={{ backgroundColor: "#E8E8E8" }}
               >
                 <Link href={`/posts/${post.slug}`}>
                   <img
-                    className="rounded-t-lg"
+                    className="rounded-t-lg "
                     src={post.file}
                     alt={post.title}
                   />
                 </Link>
                 <div className="p-5">
                   <Link href={`/posts/${post.slug}`}>
-                    <h5 className="text-gray-900 font-bold text-2xl tracking-tight mb-2">
+                    <h6 className="text-gray-900 font-bold text-2xl tracking-tight mb-2">
                       {post.title}
-                    </h5>
+                    </h6>
                   </Link>
                   <p className="font-normal text-gray-700 mb-3">
                     {post.content.slice(0, 100)}...
@@ -115,22 +117,16 @@ const fetchData = async (page: number) => {
             ))}
           </div>
 
-          <div className="flex overflow-x-auto sm:justify-center space-x-4">
+          <div className="flex justify-center">
             <Pagination
               currentPage={currentPage}
               totalPages={Math.ceil(filteredBlogData.length / postsPerPage)}
               onPageChange={onPageChange}
             />
-            {/* 
-  <Pagination
-    currentPage={currentPage}
-    totalPages={100}
-    onPageChange={onPageChange}
-  /> */}
           </div>
         </div>
       </div>
-      <footer />
+      <Footer />
     </>
   );
 };

@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+Project Title: Next.js Blog 
 
-First, run the development server:
+Overview
 
-```bash
+This Next.js project is a Blog  that allows users to view a list of blog posts, read individual blog posts, and search for specific posts. The project uses JSON Server to store blog data and implements features such as pagination, responsive design, and error handling.
+
+Features
+Blog Home Page:
+
+Displays a list of blog posts.
+Each post shows the title, publication date, and a brief excerpt.
+Styled using Tailwind CSS.
+Blog Post Page:
+
+Dynamic route for individual blog posts (e.g., /posts/[slug]).
+Displays the full content of a blog post.
+Includes a back button to navigate back to the homepage.
+Styled using Tailwind CSS.
+Blog Data:
+
+Blog data is stored in the blogData.js file as an array of sample blog posts.
+Each post has properties like title, date, slug, and content.
+Responsive Design:
+
+Ensures the application is responsive and visually appealing on various screen sizes.
+Utilizes Tailwind CSS classes for responsiveness.
+Pagination :
+
+Implements pagination on the homepage.
+Limits the number of posts displayed per page.
+Search Functionality :
+
+Allows users to search for blog posts based on keywords.
+Provides a search bar for users to input their search queries.
+Installation
+Clone the repository:
+
+git clone https://github.com/CrispinManda/Blog-Page-using-Nextjs.git
+Navigate to the project directory:
+
+cd nextjs-blog-management
+Install dependencies:
+
+npm install
+
+Start the JSON server:
+$ json-server  blogData.json -p 4200
+
+Start the Next.js application:
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The application will be running on http://localhost:3000.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Usage
+Open your browser and go to http://localhost:3000.
+Explore the homepage, read individual blog posts, and use the search functionality.
+Pagination is implemented to navigate through different sets of blog posts.
+Folder Structure
+pages/index.tsx: Homepage displaying a list of blog posts with pagination.
+pages/posts/[slug].tsx: Dynamic route for individual blog posts.
+components/: Reusable React components for the UI.
+styles/: Tailwind CSS styles and utility classes.
+data/blogData.js: File storing sample blog data.
+Bonus Features Implementation
+Pagination
+Pagination is implemented on the homepage to display a limited number of posts per page. Users can navigate through different pages to explore more blog posts.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Search Functionality
+A search bar is provided to allow users to search for specific blog posts based on keywords. The application filters and displays relevant results in real-time.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Accessibility
+The application has been designed with accessibility in mind, ensuring a positive user experience for all users.
 
-## Learn More
+GitHub Repository
+https://github.com/CrispinManda/
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Feel free to explore and customize the code according to your needs. If you encounter any issues or have questions, please talk to me via email crispinmanda06@gmail.com Happy coding!
